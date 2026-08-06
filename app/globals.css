@@ -1,26 +1,233 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #10151f;
+  --panel: #171f2c;
+  --panel-border: #29344a;
+  --ink: #eef1f6;
+  --ink-dim: #97a2b8;
+  --accent: #d9a441;
+  --accent-dim: #7a6435;
+  --danger: #e2694f;
+  --ok: #5fb98a;
+  --radius: 10px;
+
+  --font-space-grotesk: "Space Grotesk", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  padding: 0;
+  margin: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at 12% -10%, rgba(217, 164, 65, 0.1), transparent 45%), var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 560px;
+}
+
+.eyebrow {
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+h1 {
+  font-family: var(--font-space-grotesk);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  color: var(--ink-dim);
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0 0 28px;
+  max-width: 44ch;
+}
+
+form {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field:last-of-type {
+  margin-bottom: 0;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-dim);
+  margin-bottom: 7px;
+  letter-spacing: 0.01em;
+}
+
+label .req {
+  color: var(--accent);
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 11px;
+}
+
+input {
+  width: 100%;
+  background: #0d1219;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  padding: 11px 13px;
+  color: var(--ink);
+  font-family: var(--font-inter);
+  font-size: 14.5px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+input::placeholder {
+  color: #4c5670;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #0f1521;
+}
+
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+input.invalid {
+  border-color: var(--danger);
+}
+
+.pin-block {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--panel-border);
+}
+
+.pin-block label {
+  color: var(--accent);
+}
+
+input#pin {
+  font-family: var(--font-ibm-plex-mono);
+  letter-spacing: 0.3em;
+  font-size: 16px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--ink-dim);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.hint.error {
+  color: var(--danger);
+}
+
+button {
+  width: 100%;
+  margin-top: 26px;
+  padding: 13px 16px;
+  border-radius: 7px;
+  border: none;
+  background: var(--accent);
+  color: #10151f;
+  font-family: var(--font-space-grotesk);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:hover:not(:disabled) {
+  background: #e6b458;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+button:disabled {
+  background: var(--accent-dim);
+  color: #7d8394;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  padding: 12px 14px;
+  border-radius: 7px;
+  display: none;
+}
+
+.status.show {
+  display: block;
+}
+
+.status.ok {
+  background: rgba(95, 185, 138, 0.1);
+  border: 1px solid rgba(95, 185, 138, 0.3);
+  color: var(--ok);
+}
+
+.status.err {
+  background: rgba(226, 105, 79, 0.1);
+  border: 1px solid rgba(226, 105, 79, 0.3);
+  color: var(--danger);
+}
+
+.config-note {
+  margin-top: 18px;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 11px;
+  color: #4c5670;
+  line-height: 1.6;
+  text-align: center;
 }
