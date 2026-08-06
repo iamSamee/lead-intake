@@ -9,23 +9,74 @@ const WEBHOOK_URL = "https://n8n.vamonos.digital/webhook/lead-intake";
 const CORRECT_PIN = "5215";
 // ---------------------------------------------------------------
 
+const INDUSTRY_OPTIONS = [
+  { value: "information-technology", label: "Information Technology & Services" },
+  { value: "construction", label: "Construction" },
+  { value: "marketing-advertising", label: "Marketing & Advertising" },
+  { value: "real-estate", label: "Real Estate" },
+  { value: "health-wellness-fitness", label: "Health, Wellness & Fitness" },
+  { value: "automotive", label: "Automotive" },
+  { value: "financial-services", label: "Financial Services" },
+  { value: "retail", label: "Retail" },
+  { value: "manufacturing", label: "Manufacturing" },
+  { value: "education", label: "Education" },
+  { value: "hospitality", label: "Hospitality" },
+  { value: "other", label: "Other" },
+];
+
+const EMPLOYEE_OPTIONS = [
+  { value: "1-10", label: "1-10" },
+  { value: "11-20", label: "11-20" },
+  { value: "21-50", label: "21-50" },
+  { value: "51-100", label: "51-100" },
+  { value: "101-200", label: "101-200" },
+  { value: "201-500", label: "201-500" },
+  { value: "501-1000", label: "501-1,000" },
+  { value: "1001-2000", label: "1,001-2,000" },
+  { value: "2001-5000", label: "2,001-5,000" },
+  { value: "5001-10000", label: "5,001-10,000" },
+  { value: "10001+", label: "10,001+" },
+];
+
+const JOB_TITLE_OPTIONS = [
+  { value: "ceo", label: "CEO" },
+  { value: "cto", label: "CTO" },
+  { value: "cfo", label: "CFO" },
+  { value: "vp-sales", label: "VP of Sales" },
+  { value: "vp-marketing", label: "VP of Marketing" },
+  { value: "director-operations", label: "Director of Operations" },
+  { value: "project-manager", label: "Project Manager" },
+  { value: "product-manager", label: "Product Manager" },
+  { value: "marketing-manager", label: "Marketing Manager" },
+  { value: "sales-manager", label: "Sales Manager" },
+  { value: "software-engineer", label: "Software Engineer" },
+  { value: "business-development-manager", label: "Business Development Manager" },
+  { value: "account-executive", label: "Account Executive" },
+  { value: "hr-manager", label: "HR Manager" },
+  { value: "operations-manager", label: "Operations Manager" },
+];
+
 type FieldName = "pin";
 
 type LeadFormData = {
   industry: string;
-  education: string;
   employees: string;
-  location: string;
   jobTitle: string;
+  location: string;
+  phone: string;
+  website: string;
+  emailStatusVerified: boolean;
   pin: string;
 };
 
 const initialFormData: LeadFormData = {
   industry: "",
-  education: "",
   employees: "",
-  location: "",
   jobTitle: "",
+  location: "",
+  phone: "",
+  website: "",
+  emailStatusVerified: true,
   pin: "",
 };
 
@@ -36,7 +87,7 @@ export default function Home() {
   const [pinError, setPinError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  function updateField(field: keyof LeadFormData, value: string) {
+  function updateField<K extends keyof LeadFormData>(field: K, value: LeadFormData[K]) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -45,11 +96,13 @@ export default function Home() {
     setStatus(null);
 
     const data = {
-      industry: formData.industry.trim(),
-      education: formData.education.trim(),
-      employees: formData.employees.trim(),
+      industry: formData.industry,
+      employees: formData.employees,
+      jobTitle: formData.jobTitle,
       location: formData.location.trim(),
-      jobTitle: formData.jobTitle.trim(),
+      phone: formData.phone.trim(),
+      website: formData.website.trim(),
+      emailStatus: formData.emailStatusVerified,
       pin: formData.pin.trim(),
     };
 
@@ -118,38 +171,53 @@ export default function Home() {
       <form noValidate onSubmit={handleSubmit}>
         <div className="field">
           <label htmlFor="industry">Industry &amp; keywords</label>
-          <input
+          <select
             id="industry"
             name="industry"
-            type="text"
-            placeholder="automotive, construction, real estate…"
             value={formData.industry}
             onChange={(e) => updateField("industry", e.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="education">Education</label>
-          <input
-            id="education"
-            name="education"
-            type="text"
-            placeholder="e.g. Bachelor's degree"
-            value={formData.education}
-            onChange={(e) => updateField("education", e.target.value)}
-          />
+          >
+            <option value="">Select industry</option>
+            {INDUSTRY_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="field">
           <label htmlFor="employees"># Employees</label>
-          <input
+          <select
             id="employees"
             name="employees"
-            type="text"
-            placeholder="e.g. 1-10"
             value={formData.employees}
             onChange={(e) => updateField("employees", e.target.value)}
-          />
+          >
+            <option value="">Select employee range</option>
+            {EMPLOYEE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
+          <label htmlFor="jobTitle">Job title</label>
+          <select
+            id="jobTitle"
+            name="jobTitle"
+            value={formData.jobTitle}
+            onChange={(e) => updateField("jobTitle", e.target.value)}
+          >
+            <option value="">Select job title</option>
+            {JOB_TITLE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="field">
@@ -165,15 +233,40 @@ export default function Home() {
         </div>
 
         <div className="field">
-          <label htmlFor="jobTitle">Job title</label>
+          <label htmlFor="phone">Phone number</label>
           <input
-            id="jobTitle"
-            name="jobTitle"
-            type="text"
-            placeholder="e.g. Project Manager"
-            value={formData.jobTitle}
-            onChange={(e) => updateField("jobTitle", e.target.value)}
+            id="phone"
+            name="phone"
+            type="tel"
+            placeholder="+1 555 123 4567"
+            value={formData.phone}
+            onChange={(e) => updateField("phone", e.target.value)}
           />
+        </div>
+
+        <div className="field">
+          <label htmlFor="website">Website URL</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            placeholder="acme.com"
+            value={formData.website}
+            onChange={(e) => updateField("website", e.target.value)}
+          />
+        </div>
+
+        <div className="field checkbox-field">
+          <input
+            id="emailStatus"
+            name="emailStatus"
+            type="checkbox"
+            checked={formData.emailStatusVerified}
+            onChange={(e) => updateField("emailStatusVerified", e.target.checked)}
+          />
+          <label htmlFor="emailStatus" className="checkbox-label">
+            Verified emails only
+          </label>
         </div>
 
         <div className="pin-block">
