@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 // ---------------------------------------------------------------
 // CONFIG
@@ -9,7 +9,9 @@ const WEBHOOK_URL = "https://n8n.vamonos.digital/webhook/lead-intake";
 const CORRECT_PIN = "5215";
 // ---------------------------------------------------------------
 
-const INDUSTRY_OPTIONS = [
+type Option = { value: string; label: string };
+
+const INDUSTRY_OPTIONS: Option[] = [
   { value: "information-technology", label: "Information Technology & Services" },
   { value: "construction", label: "Construction" },
   { value: "marketing-advertising", label: "Marketing & Advertising" },
@@ -24,7 +26,7 @@ const INDUSTRY_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
-const EMPLOYEE_OPTIONS = [
+const EMPLOYEE_OPTIONS: Option[] = [
   { value: "1-10", label: "1-10" },
   { value: "11-20", label: "11-20" },
   { value: "21-50", label: "21-50" },
@@ -38,7 +40,7 @@ const EMPLOYEE_OPTIONS = [
   { value: "10001+", label: "10,001+" },
 ];
 
-const JOB_TITLE_OPTIONS = [
+const JOB_TITLE_OPTIONS: Option[] = [
   { value: "ceo", label: "CEO" },
   { value: "cto", label: "CTO" },
   { value: "cfo", label: "CFO" },
@@ -59,10 +61,10 @@ const JOB_TITLE_OPTIONS = [
 type FieldName = "pin";
 
 type LeadFormData = {
-  industry: string;
+  industry: string[];
   employees: string;
-  jobTitle: string;
-  location: string;
+  jobTitle: string[];
+  location: string[];
   phone: string;
   website: string;
   emailStatusVerified: boolean;
@@ -70,15 +72,139 @@ type LeadFormData = {
 };
 
 const initialFormData: LeadFormData = {
-  industry: "",
+  industry: [],
   employees: "",
-  jobTitle: "",
-  location: "",
+  jobTitle: [],
+  location: [],
   phone: "",
   website: "",
   emailStatusVerified: true,
   pin: "",
 };
+
+function MultiSelectField({
+  id,
+  options,
+  values,
+  onChange,
+  placeholder,
+}: {
+  id: string;
+  options?: Option[];
+  values: string[];
+  onChange: (values: string[]) => void;
+  placeholder: string;
+}) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function labelFor(value: string) {
+    return options?.find((opt) => opt.value === value)?.label ?? value;
+  }
+
+  function addValue(value: string) {
+    const trimmed = value.trim();
+    if (!trimmed || values.includes(trimmed)) return;
+    onChange([...values, trimmed]);
+    setQuery("");
+    setOpen(false);
+  }
+
+  function removeValue(value: string) {
+    onChange(values.filter((v) => v !== value));
+  }
+
+  const trimmedQuery = query.trim();
+  const filteredOptions = (options ?? []).filter(
+    (opt) => !values.includes(opt.value) && opt.label.toLowerCase().includes(trimmedQuery.toLowerCase())
+  );
+  const exactOptionMatch = options?.some(
+    (opt) =>
+      opt.value.toLowerCase() === trimmedQuery.toLowerCase() || opt.label.toLowerCase() === trimmedQuery.toLowerCase()
+  );
+  const showCustomAdd = trimmedQuery.length > 0 && !exactOptionMatch && !values.includes(trimmedQuery);
+  const dropdownVisible = open && (showCustomAdd || filteredOptions.length > 0);
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredOptions.length > 0) {
+        addValue(filteredOptions[0].value);
+      } else if (trimmedQuery) {
+        addValue(trimmedQuery);
+      }
+    } else if (e.key === "Backspace" && !query && values.length) {
+      removeValue(values[values.length - 1]);
+    } else if (e.key === "Escape") {
+      setOpen(false);
+    }
+  }
+
+  return (
+    <div className="multiselect" ref={containerRef}>
+      <div className="multiselect-control" onClick={() => setOpen(true)}>
+        {values.map((v) => (
+          <span className="tag" key={v}>
+            {labelFor(v)}
+            <button
+              type="button"
+              className="tag-remove"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeValue(v);
+              }}
+              aria-label={`Remove ${labelFor(v)}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          id={id}
+          type="text"
+          className="multiselect-input"
+          value={query}
+          placeholder={values.length ? "" : placeholder}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
+      {dropdownVisible && (
+        <div className="multiselect-dropdown">
+          {showCustomAdd && (
+            <button
+              type="button"
+              className="multiselect-option multiselect-option-custom"
+              onClick={() => addValue(trimmedQuery)}
+            >
+              Add “{trimmedQuery}”
+            </button>
+          )}
+          {filteredOptions.map((opt) => (
+            <button type="button" key={opt.value} className="multiselect-option" onClick={() => addValue(opt.value)}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const [formData, setFormData] = useState<LeadFormData>(initialFormData);
@@ -99,7 +225,7 @@ export default function Home() {
       industry: formData.industry,
       employees: formData.employees,
       jobTitle: formData.jobTitle,
-      location: formData.location.trim(),
+      location: formData.location,
       phone: formData.phone.trim(),
       website: formData.website.trim(),
       emailStatus: formData.emailStatusVerified,
@@ -171,19 +297,13 @@ export default function Home() {
       <form noValidate onSubmit={handleSubmit}>
         <div className="field">
           <label htmlFor="industry">Industry &amp; keywords</label>
-          <select
+          <MultiSelectField
             id="industry"
-            name="industry"
-            value={formData.industry}
-            onChange={(e) => updateField("industry", e.target.value)}
-          >
-            <option value="">Select industry</option>
-            {INDUSTRY_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={INDUSTRY_OPTIONS}
+            values={formData.industry}
+            onChange={(values) => updateField("industry", values)}
+            placeholder="Add industries or keywords…"
+          />
         </div>
 
         <div className="field">
@@ -205,30 +325,22 @@ export default function Home() {
 
         <div className="field">
           <label htmlFor="jobTitle">Job title</label>
-          <select
+          <MultiSelectField
             id="jobTitle"
-            name="jobTitle"
-            value={formData.jobTitle}
-            onChange={(e) => updateField("jobTitle", e.target.value)}
-          >
-            <option value="">Select job title</option>
-            {JOB_TITLE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={JOB_TITLE_OPTIONS}
+            values={formData.jobTitle}
+            onChange={(values) => updateField("jobTitle", values)}
+            placeholder="Add job titles…"
+          />
         </div>
 
         <div className="field">
           <label htmlFor="location">Location</label>
-          <input
+          <MultiSelectField
             id="location"
-            name="location"
-            type="text"
+            values={formData.location}
+            onChange={(values) => updateField("location", values)}
             placeholder="e.g. San Francisco, CA"
-            value={formData.location}
-            onChange={(e) => updateField("location", e.target.value)}
           />
         </div>
 

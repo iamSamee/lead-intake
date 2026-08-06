@@ -185,6 +185,119 @@ select option {
   color: var(--ink);
 }
 
+.multiselect {
+  position: relative;
+}
+
+.multiselect-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 44px;
+  background: #0d1219;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  padding: 7px 9px;
+  cursor: text;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.multiselect-control:focus-within {
+  border-color: var(--accent);
+  background: #0f1521;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(217, 164, 65, 0.14);
+  border: 1px solid rgba(217, 164, 65, 0.35);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 4px 6px 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tag-remove {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.tag-remove:hover {
+  color: #e6b458;
+}
+
+.multiselect-input {
+  flex: 1 1 80px;
+  min-width: 80px;
+  border: none;
+  background: transparent;
+  padding: 4px 2px;
+  color: var(--ink);
+  font-family: var(--font-inter);
+  font-size: 14.5px;
+}
+
+.multiselect-input:focus {
+  outline: none;
+}
+
+.multiselect-input::placeholder {
+  color: #4c5670;
+}
+
+.multiselect-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #0d1219;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  padding: 6px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.multiselect-option {
+  all: unset;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  color: var(--ink);
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 13.5px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.multiselect-option:hover {
+  background: rgba(217, 164, 65, 0.12);
+  color: var(--accent);
+}
+
+.multiselect-option-custom {
+  color: var(--accent);
+  font-style: italic;
+}
+
 .checkbox-field {
   display: flex;
   align-items: center;
