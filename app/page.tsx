@@ -9,37 +9,25 @@ const WEBHOOK_URL = "https://n8n.vamonos.digital/webhook/lead-intake";
 const CORRECT_PIN = "5215";
 // ---------------------------------------------------------------
 
-type FieldName = "name" | "email" | "company" | "website" | "pin";
+type FieldName = "pin";
 
 type LeadFormData = {
-  name: string;
-  email: string;
-  id: string;
-  company: string;
-  website: string;
-  phone: string;
+  industry: string;
+  education: string;
+  employees: string;
+  location: string;
+  jobTitle: string;
   pin: string;
 };
 
 const initialFormData: LeadFormData = {
-  name: "",
-  email: "",
-  id: "",
-  company: "",
-  website: "",
-  phone: "",
+  industry: "",
+  education: "",
+  employees: "",
+  location: "",
+  jobTitle: "",
   pin: "",
 };
-
-function isValidUrl(value: string): boolean {
-  if (!value) return true; // optional field
-  try {
-    new URL(value.startsWith("http") ? value : `https://${value}`);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export default function Home() {
   const [formData, setFormData] = useState<LeadFormData>(initialFormData);
@@ -57,34 +45,19 @@ export default function Home() {
     setStatus(null);
 
     const data = {
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      id: formData.id.trim(),
-      company: formData.company.trim(),
-      website: formData.website.trim(),
-      phone: formData.phone.trim(),
+      industry: formData.industry.trim(),
+      education: formData.education.trim(),
+      employees: formData.employees.trim(),
+      location: formData.location.trim(),
+      jobTitle: formData.jobTitle.trim(),
       pin: formData.pin.trim(),
     };
 
-    const missing = new Set<FieldName>();
-    if (!data.name) missing.add("name");
-    if (!data.email) missing.add("email");
-    if (!data.company) missing.add("company");
-    if (!data.pin) missing.add("pin");
-
-    if (missing.size) {
-      setInvalidFields(missing);
+    if (!data.pin) {
+      setInvalidFields(new Set(["pin"]));
       setStatus({ kind: "err", message: "Please fill in all required fields." });
       return;
     }
-
-    if (!isValidUrl(data.website)) {
-      setInvalidFields(new Set(["website"]));
-      setStatus({ kind: "err", message: "That website URL doesn't look right." });
-      return;
-    }
-
-    setInvalidFields(new Set());
 
     // PIN gate — client-side only. Anyone who can view this page's source
     // can see CORRECT_PIN, so treat this as a soft gate, not real security.
@@ -96,6 +69,7 @@ export default function Home() {
       setStatus({ kind: "err", message: "Submission blocked — PIN did not match." });
       return;
     }
+    setInvalidFields(new Set());
     setPinError(false);
 
     const { pin, ...payload } = data;
@@ -143,87 +117,62 @@ export default function Home() {
 
       <form noValidate onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="name">
-            Full name <span className="req">required</span>
-          </label>
+          <label htmlFor="industry">Industry &amp; keywords</label>
           <input
-            id="name"
-            name="name"
+            id="industry"
+            name="industry"
             type="text"
-            placeholder="Jane Doe"
-            required
-            className={inputClass("name")}
-            value={formData.name}
-            onChange={(e) => updateField("name", e.target.value)}
+            placeholder="automotive, construction, real estate…"
+            value={formData.industry}
+            onChange={(e) => updateField("industry", e.target.value)}
           />
         </div>
 
         <div className="field">
-          <label htmlFor="email">
-            Email <span className="req">required</span>
-          </label>
+          <label htmlFor="education">Education</label>
           <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="jane@company.com"
-            required
-            className={inputClass("email")}
-            value={formData.email}
-            onChange={(e) => updateField("email", e.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="leadId">ID</label>
-          <input
-            id="leadId"
-            name="id"
+            id="education"
+            name="education"
             type="text"
-            placeholder="Lead / record ID (optional)"
-            value={formData.id}
-            onChange={(e) => updateField("id", e.target.value)}
+            placeholder="e.g. Bachelor's degree"
+            value={formData.education}
+            onChange={(e) => updateField("education", e.target.value)}
           />
         </div>
 
         <div className="field">
-          <label htmlFor="company">
-            Company name <span className="req">required</span>
-          </label>
+          <label htmlFor="employees"># Employees</label>
           <input
-            id="company"
-            name="company"
+            id="employees"
+            name="employees"
             type="text"
-            placeholder="Acme Inc."
-            required
-            className={inputClass("company")}
-            value={formData.company}
-            onChange={(e) => updateField("company", e.target.value)}
+            placeholder="e.g. 1-10"
+            value={formData.employees}
+            onChange={(e) => updateField("employees", e.target.value)}
           />
         </div>
 
         <div className="field">
-          <label htmlFor="website">Website URL</label>
+          <label htmlFor="location">Location</label>
           <input
-            id="website"
-            name="website"
+            id="location"
+            name="location"
             type="text"
-            placeholder="acme.com"
-            className={inputClass("website")}
-            value={formData.website}
-            onChange={(e) => updateField("website", e.target.value)}
+            placeholder="e.g. San Francisco, CA"
+            value={formData.location}
+            onChange={(e) => updateField("location", e.target.value)}
           />
         </div>
 
         <div className="field">
-          <label htmlFor="phone">Phone number</label>
+          <label htmlFor="jobTitle">Job title</label>
           <input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="+1 555 123 4567"
-            value={formData.phone}
-            onChange={(e) => updateField("phone", e.target.value)}
+            id="jobTitle"
+            name="jobTitle"
+            type="text"
+            placeholder="e.g. Project Manager"
+            value={formData.jobTitle}
+            onChange={(e) => updateField("jobTitle", e.target.value)}
           />
         </div>
 
