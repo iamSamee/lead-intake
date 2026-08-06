@@ -65,8 +65,6 @@ type LeadFormData = {
   employees: string;
   jobTitle: string[];
   location: string[];
-  phone: string;
-  website: string;
   emailStatusVerified: boolean;
   pin: string;
 };
@@ -76,8 +74,6 @@ const initialFormData: LeadFormData = {
   employees: "",
   jobTitle: [],
   location: [],
-  phone: "",
-  website: "",
   emailStatusVerified: true,
   pin: "",
 };
@@ -226,8 +222,6 @@ export default function Home() {
       employees: formData.employees,
       jobTitle: formData.jobTitle,
       location: formData.location,
-      phone: formData.phone.trim(),
-      website: formData.website.trim(),
       emailStatus: formData.emailStatusVerified,
       pin: formData.pin.trim(),
     };
@@ -341,30 +335,6 @@ export default function Home() {
             values={formData.location}
             onChange={(values) => updateField("location", values)}
             placeholder="e.g. San Francisco, CA"
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="phone">Phone number</label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="+1 555 123 4567"
-            value={formData.phone}
-            onChange={(e) => updateField("phone", e.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="website">Website URL</label>
-          <input
-            id="website"
-            name="website"
-            type="text"
-            placeholder="acme.com"
-            value={formData.website}
-            onChange={(e) => updateField("website", e.target.value)}
           />
         </div>
 
