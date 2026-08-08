@@ -23,6 +23,16 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Lead Intake",
   description: "Apollo Lead Intake",
+  icons: {
+    icon: [
+      { url: "https://vamonos.digital/wp-content/uploads/2025/11/cropped-favicon-32x32.jpg", sizes: "32x32" },
+      { url: "https://vamonos.digital/wp-content/uploads/2025/11/cropped-favicon-192x192.jpg", sizes: "192x192" },
+    ],
+    apple: "https://vamonos.digital/wp-content/uploads/2025/11/cropped-favicon-180x180.jpg",
+  },
+  other: {
+    "msapplication-TileImage": "https://vamonos.digital/wp-content/uploads/2025/11/cropped-favicon-270x270.jpg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

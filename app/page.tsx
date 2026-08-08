@@ -33,6 +33,8 @@ const EMPLOYEE_OPTIONS: Option[] = [
   { value: "10001+", label: "10,001+" },
 ];
 
+const LEAD_COUNT_OPTIONS = ["10", "20", "50", "100"];
+
 const JOB_TITLE_OPTIONS: Option[] = [
   { value: "ceo", label: "CEO" },
   { value: "cto", label: "CTO" },
@@ -55,18 +57,20 @@ type FieldName = "pin";
 
 type LeadFormData = {
   industry: string[];
-  employees: string;
+  employees: string[];
   jobTitle: string[];
   location: string[];
+  leadCount: string;
   emailStatusVerified: boolean;
   pin: string;
 };
 
 const initialFormData: LeadFormData = {
   industry: [],
-  employees: "",
+  employees: [],
   jobTitle: [],
   location: [],
+  leadCount: "10",
   emailStatusVerified: true,
   pin: "",
 };
@@ -215,6 +219,7 @@ export default function Home() {
       employees: formData.employees,
       jobTitle: formData.jobTitle,
       location: formData.location,
+      leadCount: Number(formData.leadCount),
       emailStatus: formData.emailStatusVerified,
       pin: formData.pin.trim(),
     };
@@ -285,19 +290,13 @@ export default function Home() {
 
         <div className="field">
           <label htmlFor="employees"># Employees</label>
-          <select
+          <MultiSelectField
             id="employees"
-            name="employees"
-            value={formData.employees}
-            onChange={(e) => updateField("employees", e.target.value)}
-          >
-            <option value="">Select employee range</option>
-            {EMPLOYEE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={EMPLOYEE_OPTIONS}
+            values={formData.employees}
+            onChange={(values) => updateField("employees", values)}
+            placeholder="Add employee ranges…"
+          />
         </div>
 
         <div className="field">
@@ -319,6 +318,22 @@ export default function Home() {
             onChange={(values) => updateField("location", values)}
             placeholder="e.g. San Francisco, CA"
           />
+        </div>
+
+        <div className="field">
+          <label htmlFor="leadCount">Number of leads</label>
+          <select
+            id="leadCount"
+            name="leadCount"
+            value={formData.leadCount}
+            onChange={(e) => updateField("leadCount", e.target.value)}
+          >
+            {LEAD_COUNT_OPTIONS.map((count) => (
+              <option key={count} value={count}>
+                {count}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="field checkbox-field">

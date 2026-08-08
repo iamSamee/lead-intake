@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     employees: body.employees,
     jobTitle: body.jobTitle,
     location: body.location,
+    leadCount: body.leadCount,
     emailStatus: body.emailStatus,
   };
 
