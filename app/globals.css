@@ -407,12 +407,3 @@ button:disabled {
   border: 1px solid rgba(226, 105, 79, 0.3);
   color: var(--danger);
 }
-
-.config-note {
-  margin-top: 18px;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 11px;
-  color: #4c5670;
-  line-height: 1.6;
-  text-align: center;
-}

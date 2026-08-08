@@ -2,13 +2,6 @@
 
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
-// ---------------------------------------------------------------
-// CONFIG
-// ---------------------------------------------------------------
-const WEBHOOK_URL = "https://n8n.vamonos.digital/webhook/lead-intake";
-const CORRECT_PIN = "5215";
-// ---------------------------------------------------------------
-
 type Option = { value: string; label: string };
 
 const INDUSTRY_OPTIONS: Option[] = [
@@ -232,43 +225,33 @@ export default function Home() {
       return;
     }
 
-    // PIN gate — client-side only. Anyone who can view this page's source
-    // can see CORRECT_PIN, so treat this as a soft gate, not real security.
-    // For real protection, validate the PIN inside the n8n workflow itself
-    // (e.g. an IF node right after Webhook).
-    if (data.pin !== CORRECT_PIN) {
-      setInvalidFields(new Set(["pin"]));
-      setPinError(true);
-      setStatus({ kind: "err", message: "Submission blocked — PIN did not match." });
-      return;
-    }
-    setInvalidFields(new Set());
-    setPinError(false);
-
-    const { pin, ...payload } = data;
-    void pin;
-
     setSubmitting(true);
     try {
-      const response = await fetch(WEBHOOK_URL, {
+      const response = await fetch("/api/submit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(data),
       });
+      const result: { error?: string } = await response.json().catch(() => ({}));
 
       if (response.ok) {
+        setInvalidFields(new Set());
+        setPinError(false);
         setStatus({ kind: "ok", message: "Lead submitted. It's on its way through the enrichment workflow." });
         setFormData(initialFormData);
+      } else if (response.status === 401) {
+        setInvalidFields(new Set(["pin"]));
+        setPinError(true);
+        setStatus({ kind: "err", message: result.error ?? "Submission blocked — PIN did not match." });
       } else {
-        setStatus({
-          kind: "err",
-          message: `Workflow responded with an error (status ${response.status}). Nothing was lost — try again.`,
-        });
+        setInvalidFields(new Set());
+        setPinError(false);
+        setStatus({ kind: "err", message: result.error ?? "Something went wrong. Try again." });
       }
     } catch {
       setStatus({
         kind: "err",
-        message: "Couldn't reach the workflow. Check the webhook URL and your connection, then try again.",
+        message: "Couldn't reach the server. Check your connection and try again.",
       });
     } finally {
       setSubmitting(false);
@@ -378,8 +361,6 @@ export default function Home() {
 
         {status && <div className={`status show ${status.kind}`}>{status.message}</div>}
       </form>
-
-      <div className="config-note">webhook target — n8n.vamonos.digital/webhook/lead-intake</div>
     </div>
   );
 }
