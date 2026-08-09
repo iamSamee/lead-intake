@@ -33,7 +33,7 @@ const EMPLOYEE_OPTIONS: Option[] = [
   { value: "10001+", label: "10,001+" },
 ];
 
-const LEAD_COUNT_OPTIONS = ["10", "20", "50", "100"];
+const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
 const JOB_TITLE_OPTIONS: Option[] = [
   { value: "ceo", label: "CEO" },
