@@ -35,6 +35,12 @@ const EMPLOYEE_OPTIONS: Option[] = [
 
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
+const DATA_SOURCE_OPTIONS: Option[] = [
+  { value: "apollo", label: "Apollo" },
+  { value: "lusha", label: "Lusha" },
+  { value: "ocean-io", label: "Ocean.io" },
+];
+
 const JOB_TITLE_OPTIONS: Option[] = [
   { value: "ceo", label: "CEO" },
   { value: "cto", label: "CTO" },
@@ -62,6 +68,7 @@ type LeadFormData = {
   location: string[];
   leadCount: string;
   emailStatusVerified: boolean;
+  dataSource: string[];
   pin: string;
 };
 
@@ -72,6 +79,7 @@ const initialFormData: LeadFormData = {
   location: [],
   leadCount: "10",
   emailStatusVerified: true,
+  dataSource: [],
   pin: "",
 };
 
@@ -199,6 +207,44 @@ function MultiSelectField({
   );
 }
 
+function CheckboxGroupField({
+  id,
+  options,
+  values,
+  onChange,
+}: {
+  id: string;
+  options: Option[];
+  values: string[];
+  onChange: (values: string[]) => void;
+}) {
+  function toggle(value: string) {
+    if (values.includes(value)) {
+      onChange(values.filter((v) => v !== value));
+    } else {
+      onChange([...values, value]);
+    }
+  }
+
+  return (
+    <div className="checkbox-group" role="group" aria-label={id}>
+      {options.map((opt) => (
+        <div className="checkbox-field" key={opt.value}>
+          <input
+            id={`${id}-${opt.value}`}
+            type="checkbox"
+            checked={values.includes(opt.value)}
+            onChange={() => toggle(opt.value)}
+          />
+          <label htmlFor={`${id}-${opt.value}`} className="checkbox-label">
+            {opt.label}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const [formData, setFormData] = useState<LeadFormData>(initialFormData);
   const [invalidFields, setInvalidFields] = useState<Set<FieldName>>(new Set());
@@ -221,6 +267,7 @@ export default function Home() {
       location: formData.location,
       leadCount: Number(formData.leadCount),
       emailStatus: formData.emailStatusVerified,
+      dataSource: formData.dataSource,
       pin: formData.pin.trim(),
     };
 
@@ -334,6 +381,17 @@ export default function Home() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="field">
+          <label htmlFor="dataSource">Data source</label>
+          <CheckboxGroupField
+            id="dataSource"
+            options={DATA_SOURCE_OPTIONS}
+            values={formData.dataSource}
+            onChange={(values) => updateField("dataSource", values)}
+          />
+          <div className="hint">{formData.dataSource.length} selected</div>
         </div>
 
         <div className="field checkbox-field">

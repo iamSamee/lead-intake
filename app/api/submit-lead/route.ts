@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     location: body.location,
     leadCount: body.leadCount,
     emailStatus: body.emailStatus,
+    dataSource: body.dataSource,
   };
 
   let webhookResponse: Response;
