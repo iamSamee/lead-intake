@@ -22,6 +22,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Webhook is not configured on the server." }, { status: 500 });
   }
 
+  const dataSource = Array.isArray(body.dataSource) ? body.dataSource : [];
+
   const payload = {
     industry: body.industry,
     employees: body.employees,
@@ -29,7 +31,8 @@ export async function POST(request: Request) {
     location: body.location,
     leadCount: body.leadCount,
     emailStatus: body.emailStatus,
-    dataSource: body.dataSource,
+    dataSource,
+    dataSourceCount: dataSource.length,
   };
 
   let webhookResponse: Response;
