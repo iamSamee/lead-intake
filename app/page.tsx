@@ -33,14 +33,6 @@ const EMPLOYEE_OPTIONS: Option[] = [
   { value: "10001+", label: "10,001+" },
 ];
 
-const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
-
-const DATA_SOURCE_OPTIONS: Option[] = [
-  { value: "apollo", label: "Apollo" },
-  { value: "lusha", label: "Lusha" },
-  { value: "ocean-io", label: "Ocean.io" },
-];
-
 const JOB_TITLE_OPTIONS: Option[] = [
   { value: "ceo", label: "CEO" },
   { value: "cto", label: "CTO" },
@@ -59,27 +51,116 @@ const JOB_TITLE_OPTIONS: Option[] = [
   { value: "operations-manager", label: "Operations Manager" },
 ];
 
+const COMPANY_TYPE_OPTIONS: Option[] = [
+  { value: "public", label: "Public" },
+  { value: "private", label: "Private" },
+  { value: "government", label: "Government" },
+  { value: "self-employed", label: "Self-employed" },
+  { value: "educational", label: "Educational" },
+  { value: "non-profit", label: "Non-profit" },
+];
+
+const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
+
+const DATA_SOURCE_OPTIONS: Option[] = [
+  { value: "apollo", label: "Apollo" },
+  { value: "lusha", label: "Lusha" },
+  { value: "ocean-io", label: "Ocean.io" },
+];
+
+type MultiFieldKey =
+  | "industry"
+  | "employees"
+  | "jobTitle"
+  | "location"
+  | "lushaCompanyName"
+  | "lushaCompanyLocation"
+  | "lushaCompanyKeywords"
+  | "lushaIndustry"
+  | "lushaEmployeeHeadcount"
+  | "lushaCompanyType"
+  | "oceanCompanySize"
+  | "oceanIndustry"
+  | "oceanPrimaryLocation"
+  | "oceanKeywords";
+
+type FieldConfig = {
+  key: MultiFieldKey;
+  label: string;
+  options?: Option[];
+  placeholder: string;
+};
+
+const APOLLO_FIELDS: FieldConfig[] = [
+  { key: "industry", label: "Industry & keywords", options: INDUSTRY_OPTIONS, placeholder: "Add industries or keywords…" },
+  { key: "employees", label: "# Employees", options: EMPLOYEE_OPTIONS, placeholder: "Add employee ranges…" },
+  { key: "jobTitle", label: "Job title", options: JOB_TITLE_OPTIONS, placeholder: "Add job titles…" },
+  { key: "location", label: "Location", placeholder: "e.g. San Francisco, CA" },
+];
+
+const LUSHA_FIELDS: FieldConfig[] = [
+  { key: "lushaCompanyName", label: "Company name", placeholder: "Add company names…" },
+  { key: "lushaCompanyLocation", label: "Company location", placeholder: "e.g. San Francisco, CA" },
+  { key: "lushaCompanyKeywords", label: "Company keywords", placeholder: "Add keywords…" },
+  { key: "lushaIndustry", label: "Industry", options: INDUSTRY_OPTIONS, placeholder: "Add industries…" },
+  { key: "lushaEmployeeHeadcount", label: "Employee headcount", options: EMPLOYEE_OPTIONS, placeholder: "Add headcount ranges…" },
+  { key: "lushaCompanyType", label: "Company type", options: COMPANY_TYPE_OPTIONS, placeholder: "Add company types…" },
+];
+
+const OCEAN_FIELDS: FieldConfig[] = [
+  { key: "oceanCompanySize", label: "Company size", options: EMPLOYEE_OPTIONS, placeholder: "Add company size ranges…" },
+  { key: "oceanIndustry", label: "Industry", options: INDUSTRY_OPTIONS, placeholder: "Add industries…" },
+  { key: "oceanPrimaryLocation", label: "Primary location", placeholder: "e.g. San Francisco, CA" },
+  { key: "oceanKeywords", label: "Keywords", placeholder: "Add keywords…" },
+];
+
+const DATA_SOURCE_FIELDS: Record<string, FieldConfig[]> = {
+  apollo: APOLLO_FIELDS,
+  lusha: LUSHA_FIELDS,
+  "ocean-io": OCEAN_FIELDS,
+};
+
 type FieldName = "pin";
 
 type LeadFormData = {
+  dataSource: string;
   industry: string[];
   employees: string[];
   jobTitle: string[];
   location: string[];
+  lushaCompanyName: string[];
+  lushaCompanyLocation: string[];
+  lushaCompanyKeywords: string[];
+  lushaIndustry: string[];
+  lushaEmployeeHeadcount: string[];
+  lushaCompanyType: string[];
+  oceanCompanySize: string[];
+  oceanIndustry: string[];
+  oceanPrimaryLocation: string[];
+  oceanKeywords: string[];
   leadCount: string;
   emailStatusVerified: boolean;
-  dataSource: string[];
   pin: string;
 };
 
 const initialFormData: LeadFormData = {
+  dataSource: "apollo",
   industry: [],
   employees: [],
   jobTitle: [],
   location: [],
+  lushaCompanyName: [],
+  lushaCompanyLocation: [],
+  lushaCompanyKeywords: [],
+  lushaIndustry: [],
+  lushaEmployeeHeadcount: [],
+  lushaCompanyType: [],
+  oceanCompanySize: [],
+  oceanIndustry: [],
+  oceanPrimaryLocation: [],
+  oceanKeywords: [],
   leadCount: "10",
   emailStatusVerified: true,
-  dataSource: [],
   pin: "",
 };
 
@@ -207,44 +288,6 @@ function MultiSelectField({
   );
 }
 
-function CheckboxGroupField({
-  id,
-  options,
-  values,
-  onChange,
-}: {
-  id: string;
-  options: Option[];
-  values: string[];
-  onChange: (values: string[]) => void;
-}) {
-  function toggle(value: string) {
-    if (values.includes(value)) {
-      onChange(values.filter((v) => v !== value));
-    } else {
-      onChange([...values, value]);
-    }
-  }
-
-  return (
-    <div className="checkbox-group" role="group" aria-label={id}>
-      {options.map((opt) => (
-        <div className="checkbox-field" key={opt.value}>
-          <input
-            id={`${id}-${opt.value}`}
-            type="checkbox"
-            checked={values.includes(opt.value)}
-            onChange={() => toggle(opt.value)}
-          />
-          <label htmlFor={`${id}-${opt.value}`} className="checkbox-label">
-            {opt.label}
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function Home() {
   const [formData, setFormData] = useState<LeadFormData>(initialFormData);
   const [invalidFields, setInvalidFields] = useState<Set<FieldName>>(new Set());
@@ -256,18 +299,26 @@ export default function Home() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
+  function updateMultiField(key: MultiFieldKey, values: string[]) {
+    setFormData((prev) => ({ ...prev, [key]: values }));
+  }
+
+  const activeFields = DATA_SOURCE_FIELDS[formData.dataSource] ?? [];
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus(null);
 
+    const sourceData: Record<string, string[]> = {};
+    activeFields.forEach((field) => {
+      sourceData[field.key] = formData[field.key];
+    });
+
     const data = {
-      industry: formData.industry,
-      employees: formData.employees,
-      jobTitle: formData.jobTitle,
-      location: formData.location,
+      dataSource: formData.dataSource,
+      ...sourceData,
       leadCount: Number(formData.leadCount),
       emailStatus: formData.emailStatusVerified,
-      dataSource: formData.dataSource,
       pin: formData.pin.trim(),
     };
 
@@ -325,47 +376,33 @@ export default function Home() {
 
       <form noValidate onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="industry">Industry &amp; keywords</label>
-          <MultiSelectField
-            id="industry"
-            options={INDUSTRY_OPTIONS}
-            values={formData.industry}
-            onChange={(values) => updateField("industry", values)}
-            placeholder="Add industries or keywords…"
-          />
+          <label htmlFor="dataSource">Data source</label>
+          <select
+            id="dataSource"
+            name="dataSource"
+            value={formData.dataSource}
+            onChange={(e) => updateField("dataSource", e.target.value)}
+          >
+            {DATA_SOURCE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="field">
-          <label htmlFor="employees"># Employees</label>
-          <MultiSelectField
-            id="employees"
-            options={EMPLOYEE_OPTIONS}
-            values={formData.employees}
-            onChange={(values) => updateField("employees", values)}
-            placeholder="Add employee ranges…"
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="jobTitle">Job title</label>
-          <MultiSelectField
-            id="jobTitle"
-            options={JOB_TITLE_OPTIONS}
-            values={formData.jobTitle}
-            onChange={(values) => updateField("jobTitle", values)}
-            placeholder="Add job titles…"
-          />
-        </div>
-
-        <div className="field">
-          <label htmlFor="location">Location</label>
-          <MultiSelectField
-            id="location"
-            values={formData.location}
-            onChange={(values) => updateField("location", values)}
-            placeholder="e.g. San Francisco, CA"
-          />
-        </div>
+        {activeFields.map((field) => (
+          <div className="field" key={field.key}>
+            <label htmlFor={field.key}>{field.label}</label>
+            <MultiSelectField
+              id={field.key}
+              options={field.options}
+              values={formData[field.key]}
+              onChange={(values) => updateMultiField(field.key, values)}
+              placeholder={field.placeholder}
+            />
+          </div>
+        ))}
 
         <div className="field">
           <label htmlFor="leadCount">Number of leads</label>
@@ -381,17 +418,6 @@ export default function Home() {
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="field">
-          <label htmlFor="dataSource">Data source</label>
-          <CheckboxGroupField
-            id="dataSource"
-            options={DATA_SOURCE_OPTIONS}
-            values={formData.dataSource}
-            onChange={(values) => updateField("dataSource", values)}
-          />
-          <div className="hint">{formData.dataSource.length} selected</div>
         </div>
 
         <div className="field checkbox-field">
