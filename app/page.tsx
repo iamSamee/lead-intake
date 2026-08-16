@@ -51,13 +51,85 @@ const JOB_TITLE_OPTIONS: Option[] = [
   { value: "operations-manager", label: "Operations Manager" },
 ];
 
-const COMPANY_TYPE_OPTIONS: Option[] = [
-  { value: "public", label: "Public" },
-  { value: "private", label: "Private" },
+const LUSHA_INDUSTRY_OPTIONS: Option[] = [
+  { value: "business-services", label: "Business Services" },
+  { value: "community-nonprofit", label: "Community & Nonprofit" },
+  { value: "construction", label: "Construction" },
+  { value: "education", label: "Education" },
+  { value: "entertainment", label: "Entertainment" },
+  { value: "farming-ranching-forestry", label: "Farming, Ranching & Forestry" },
+  { value: "finance", label: "Finance" },
   { value: "government", label: "Government" },
-  { value: "self-employed", label: "Self-employed" },
+  { value: "healthcare", label: "Healthcare" },
+  { value: "hospitality", label: "Hospitality" },
+  { value: "manufacturing", label: "Manufacturing" },
+  { value: "oil-gas-mining", label: "Oil, Gas and Mining" },
+  { value: "real-estate", label: "Real Estate" },
+  { value: "utilities", label: "Utilities" },
+  { value: "retail-wholesale-trade", label: "Retail and Wholesale Trade" },
+  { value: "technology-information-media", label: "Technology, Information and Media" },
+  { value: "transportation-logistics", label: "Transportation and Logistics" },
+];
+
+const LUSHA_EMPLOYEE_OPTIONS: Option[] = [
+  { value: "1-10", label: "1-10" },
+  { value: "11-50", label: "11-50" },
+  { value: "51-200", label: "51-200" },
+  { value: "201-500", label: "201-500" },
+  { value: "501-1000", label: "501-1,000" },
+  { value: "1001-5000", label: "1,001-5,000" },
+  { value: "5001-10000", label: "5,001-10,000" },
+  { value: "10001-100000", label: "10,001-100,000" },
+  { value: "100001+", label: "100,001+" },
+];
+
+const LUSHA_COMPANY_TYPE_OPTIONS: Option[] = [
+  { value: "private-company", label: "Private Company" },
+  { value: "public-company", label: "Public Company" },
   { value: "educational", label: "Educational" },
-  { value: "non-profit", label: "Non-profit" },
+  { value: "government", label: "Government" },
+  { value: "non-profit", label: "Non Profit" },
+  { value: "self-employed", label: "Self Employed" },
+];
+
+const LUSHA_COMPANY_KEYWORDS_OPTIONS: Option[] = [
+  { value: "advertising", label: "Advertising" },
+  { value: "automotive", label: "Automotive" },
+  { value: "business-development", label: "Business development" },
+  { value: "digital-marketing", label: "Digital marketing" },
+  { value: "education", label: "Education" },
+  { value: "enterprise-resource-planning", label: "Enterprise resource planning" },
+  { value: "finance", label: "Finance" },
+  { value: "investment", label: "Investment" },
+  { value: "management", label: "Management" },
+  { value: "project-management", label: "Project management" },
+  { value: "public-relations", label: "Public relations" },
+  { value: "real-estate", label: "Real estate" },
+  { value: "recruitment", label: "Recruitment" },
+  { value: "research", label: "Research" },
+  { value: "security", label: "Security" },
+  { value: "social-media", label: "Social media" },
+];
+
+const LUSHA_COMPANY_LOCATION_OPTIONS: Option[] = [
+  { value: "united-states", label: "United States" },
+  { value: "united-kingdom", label: "United Kingdom" },
+  { value: "india", label: "India" },
+  { value: "california-united-states", label: "California, United States" },
+  { value: "new-york-united-states", label: "New York, United States" },
+  { value: "new-york-city-new-york-united-states", label: "New York City, New York, United States" },
+  { value: "mumbai-india", label: "Mumbai, India" },
+  { value: "north-america", label: "North America" },
+  { value: "london-united-kingdom", label: "London, United Kingdom" },
+  { value: "emea", label: "EMEA" },
+  { value: "australia", label: "Australia" },
+  { value: "france", label: "France" },
+  { value: "germany", label: "Germany" },
+  { value: "dubai-united-arab-emirates", label: "Dubai, United Arab Emirates" },
+  { value: "sydney-australia", label: "Sydney, Australia" },
+  { value: "paris-france", label: "Paris, France" },
+  { value: "toronto-canada", label: "Toronto, Canada" },
+  { value: "texas-united-states", label: "Texas, United States" },
 ];
 
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
@@ -100,11 +172,11 @@ const APOLLO_FIELDS: FieldConfig[] = [
 
 const LUSHA_FIELDS: FieldConfig[] = [
   { key: "lushaCompanyName", label: "Company name", placeholder: "Add company names…" },
-  { key: "lushaCompanyLocation", label: "Company location", placeholder: "e.g. San Francisco, CA" },
-  { key: "lushaCompanyKeywords", label: "Company keywords", placeholder: "Add keywords…" },
-  { key: "lushaIndustry", label: "Industry", options: INDUSTRY_OPTIONS, placeholder: "Add industries…" },
-  { key: "lushaEmployeeHeadcount", label: "Employee headcount", options: EMPLOYEE_OPTIONS, placeholder: "Add headcount ranges…" },
-  { key: "lushaCompanyType", label: "Company type", options: COMPANY_TYPE_OPTIONS, placeholder: "Add company types…" },
+  { key: "lushaCompanyLocation", label: "Company location", options: LUSHA_COMPANY_LOCATION_OPTIONS, placeholder: "Add company locations…" },
+  { key: "lushaCompanyKeywords", label: "Company keywords", options: LUSHA_COMPANY_KEYWORDS_OPTIONS, placeholder: "Add keywords…" },
+  { key: "lushaIndustry", label: "Industry", options: LUSHA_INDUSTRY_OPTIONS, placeholder: "Add industries…" },
+  { key: "lushaEmployeeHeadcount", label: "Employee headcount", options: LUSHA_EMPLOYEE_OPTIONS, placeholder: "Add headcount ranges…" },
+  { key: "lushaCompanyType", label: "Company type", options: LUSHA_COMPANY_TYPE_OPTIONS, placeholder: "Add company types…" },
 ];
 
 const OCEAN_FIELDS: FieldConfig[] = [
