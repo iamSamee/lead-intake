@@ -304,16 +304,6 @@ select option {
   color: #0a0a0a;
 }
 
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-}
-
-.checkbox-group .checkbox-field {
-  margin-bottom: 0;
-}
-
 .checkbox-field {
   display: flex;
   align-items: center;
