@@ -132,6 +132,19 @@ const LUSHA_COMPANY_LOCATION_OPTIONS: Option[] = [
   { value: "texas-united-states", label: "Texas, United States" },
 ];
 
+const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
+  { value: "1-10", label: "1-10" },
+  { value: "11-50", label: "11-50" },
+  { value: "51-200", label: "51-200" },
+  { value: "201-500", label: "201-500" },
+  { value: "501-1000", label: "501-1,000" },
+  { value: "1001-5000", label: "1,001-5,000" },
+  { value: "5001-10000", label: "5,001-10,000" },
+  { value: "10001-50000", label: "10,001-50,000" },
+  { value: "50001-100000", label: "50,001-100,000" },
+  { value: "100001+", label: "100,001+" },
+];
+
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
 const DATA_SOURCE_OPTIONS: Option[] = [
@@ -180,7 +193,7 @@ const LUSHA_FIELDS: FieldConfig[] = [
 ];
 
 const OCEAN_FIELDS: FieldConfig[] = [
-  { key: "oceanCompanySize", label: "Company size", options: EMPLOYEE_OPTIONS, placeholder: "Add company size ranges…" },
+  { key: "oceanCompanySize", label: "Company size", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
   { key: "oceanIndustry", label: "Industry", options: INDUSTRY_OPTIONS, placeholder: "Add industries…" },
   { key: "oceanPrimaryLocation", label: "Primary location", placeholder: "e.g. San Francisco, CA" },
   { key: "oceanKeywords", label: "Keywords", placeholder: "Add keywords…" },
