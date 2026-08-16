@@ -145,6 +145,21 @@ const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
   { value: "100001+", label: "100,001+" },
 ];
 
+const OCEAN_KEYWORDS_OPTIONS: Option[] = [
+  { value: "construction", label: "Construction" },
+  { value: "structural", label: "Structural" },
+  { value: "engineering", label: "Engineering" },
+  { value: "project", label: "Project" },
+  { value: "building", label: "Building" },
+  { value: "design", label: "Design" },
+  { value: "planning", label: "Planning" },
+  { value: "projects", label: "Projects" },
+  { value: "structural-design", label: "Structural design" },
+  { value: "civil-engineering", label: "Civil engineering" },
+  { value: "civil", label: "Civil" },
+  { value: "concrete", label: "Concrete" },
+];
+
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
 const DATA_SOURCE_OPTIONS: Option[] = [
@@ -196,7 +211,7 @@ const OCEAN_FIELDS: FieldConfig[] = [
   { key: "oceanCompanySize", label: "Company size", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
   { key: "oceanIndustry", label: "Industry", options: INDUSTRY_OPTIONS, placeholder: "Add industries…" },
   { key: "oceanPrimaryLocation", label: "Primary location", placeholder: "e.g. San Francisco, CA" },
-  { key: "oceanKeywords", label: "Keywords", placeholder: "Add keywords…" },
+  { key: "oceanKeywords", label: "Keywords", options: OCEAN_KEYWORDS_OPTIONS, placeholder: "Add keywords…" },
 ];
 
 const DATA_SOURCE_FIELDS: Record<string, FieldConfig[]> = {
