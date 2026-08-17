@@ -133,7 +133,8 @@ const LUSHA_COMPANY_LOCATION_OPTIONS: Option[] = [
 ];
 
 const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
-  { value: "1-10", label: "1-10" },
+  { value: "0-1", label: "0-1" },
+  { value: "2-10", label: "2-10" },
   { value: "11-50", label: "11-50" },
   { value: "51-200", label: "51-200" },
   { value: "201-500", label: "201-500" },
@@ -142,7 +143,8 @@ const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
   { value: "5001-10000", label: "5,001-10,000" },
   { value: "10001-50000", label: "10,001-50,000" },
   { value: "50001-100000", label: "50,001-100,000" },
-  { value: "100001+", label: "100,001+" },
+  { value: "100001-500000", label: "100,001-500,000" },
+  { value: "500000+", label: "500,000+" },
 ];
 
 const OCEAN_KEYWORDS_OPTIONS: Option[] = [
