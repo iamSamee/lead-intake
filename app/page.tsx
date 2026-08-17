@@ -162,55 +162,6 @@ const OCEAN_KEYWORDS_OPTIONS: Option[] = [
   { value: "concrete", label: "Concrete" },
 ];
 
-const OCEAN_INDUSTRY_OPTIONS: Option[] = [
-  { value: "administrative-services", label: "Administrative Services" },
-  { value: "advertising", label: "Advertising" },
-  { value: "agriculture-and-farming", label: "Agriculture and Farming" },
-  { value: "apps", label: "Apps" },
-  { value: "artificial-intelligence", label: "Artificial Intelligence" },
-  { value: "biotechnology", label: "Biotechnology" },
-  { value: "clothing-and-apparel", label: "Clothing and Apparel" },
-  { value: "commerce-and-shopping", label: "Commerce and Shopping" },
-  { value: "community-and-lifestyle", label: "Community and Lifestyle" },
-  { value: "consumer-electronics", label: "Consumer Electronics" },
-  { value: "consumer-goods", label: "Consumer Goods" },
-  { value: "content-and-publishing", label: "Content and Publishing" },
-  { value: "data-and-analytics", label: "Data and Analytics" },
-  { value: "design", label: "Design" },
-  { value: "education", label: "Education" },
-  { value: "energy", label: "Energy" },
-  { value: "events", label: "Events" },
-  { value: "financial-services", label: "Financial Services" },
-  { value: "food-and-beverage", label: "Food and Beverage" },
-  { value: "gaming", label: "Gaming" },
-  { value: "government-and-military", label: "Government and Military" },
-  { value: "hardware", label: "Hardware" },
-  { value: "health-care", label: "Health Care" },
-  { value: "information-technology", label: "Information Technology" },
-  { value: "internet-services", label: "Internet Services" },
-  { value: "lending-and-investments", label: "Lending and Investments" },
-  { value: "manufacturing", label: "Manufacturing" },
-  { value: "media-and-entertainment", label: "Media and Entertainment" },
-  { value: "messaging-and-telecommunications", label: "Messaging and Telecommunications" },
-  { value: "mobile", label: "Mobile" },
-  { value: "music-and-audio", label: "Music and Audio" },
-  { value: "natural-resources", label: "Natural Resources" },
-  { value: "navigation-and-mapping", label: "Navigation and Mapping" },
-  { value: "payments", label: "Payments" },
-  { value: "platforms", label: "Platforms" },
-  { value: "privacy-and-security", label: "Privacy and Security" },
-  { value: "professional-services", label: "Professional Services" },
-  { value: "real-estate", label: "Real Estate" },
-  { value: "sales-and-marketing", label: "Sales and Marketing" },
-  { value: "science-and-engineering", label: "Science and Engineering" },
-  { value: "software", label: "Software" },
-  { value: "sports", label: "Sports" },
-  { value: "sustainability", label: "Sustainability" },
-  { value: "transportation", label: "Transportation" },
-  { value: "travel-and-tourism", label: "Travel and Tourism" },
-  { value: "video", label: "Video" },
-];
-
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
 const OCEAN_LEAD_COUNT_OPTIONS = ["5", "10", "25", "50", "100", "200", "500", "1000"];
@@ -236,9 +187,8 @@ type MultiFieldKey =
   | "lushaIndustry"
   | "lushaEmployeeHeadcount"
   | "lushaCompanyType"
+  | "oceanCompanyLookalikes"
   | "oceanCompanySize"
-  | "oceanIndustry"
-  | "oceanOfficeLocation"
   | "oceanHeadquarterLocation"
   | "oceanKeywords";
 
@@ -266,9 +216,8 @@ const LUSHA_FIELDS: FieldConfig[] = [
 ];
 
 const OCEAN_FIELDS: FieldConfig[] = [
-  { key: "oceanCompanySize", label: "Company size", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
-  { key: "oceanIndustry", label: "Industry", options: OCEAN_INDUSTRY_OPTIONS, placeholder: "Add industries…" },
-  { key: "oceanOfficeLocation", label: "Office location", placeholder: "e.g. Germany" },
+  { key: "oceanCompanyLookalikes", label: "Company lookalikes", placeholder: "Add company names…" },
+  { key: "oceanCompanySize", label: "Size (employees)", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
   { key: "oceanHeadquarterLocation", label: "Headquarter location", placeholder: "e.g. Germany" },
   { key: "oceanKeywords", label: "Keywords", options: OCEAN_KEYWORDS_OPTIONS, placeholder: "Add keywords…" },
 ];
@@ -293,9 +242,8 @@ type LeadFormData = {
   lushaIndustry: string[];
   lushaEmployeeHeadcount: string[];
   lushaCompanyType: string[];
+  oceanCompanyLookalikes: string[];
   oceanCompanySize: string[];
-  oceanIndustry: string[];
-  oceanOfficeLocation: string[];
   oceanHeadquarterLocation: string[];
   oceanKeywords: string[];
   leadCount: string;
@@ -315,9 +263,8 @@ const initialFormData: LeadFormData = {
   lushaIndustry: [],
   lushaEmployeeHeadcount: [],
   lushaCompanyType: [],
+  oceanCompanyLookalikes: [],
   oceanCompanySize: [],
-  oceanIndustry: [],
-  oceanOfficeLocation: ["Germany"],
   oceanHeadquarterLocation: ["Germany"],
   oceanKeywords: [],
   leadCount: "10",
