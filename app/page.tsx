@@ -189,6 +189,7 @@ type MultiFieldKey =
   | "lushaCompanyType"
   | "oceanCompanyLookalikes"
   | "oceanCompanySize"
+  | "oceanOfficeLocation"
   | "oceanHeadquarterLocation"
   | "oceanKeywords";
 
@@ -218,6 +219,7 @@ const LUSHA_FIELDS: FieldConfig[] = [
 const OCEAN_FIELDS: FieldConfig[] = [
   { key: "oceanCompanyLookalikes", label: "Company lookalikes", placeholder: "Add company names…" },
   { key: "oceanCompanySize", label: "Size (employees)", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
+  { key: "oceanOfficeLocation", label: "Office location", placeholder: "e.g. Germany" },
   { key: "oceanHeadquarterLocation", label: "Headquarter location", placeholder: "e.g. Germany" },
   { key: "oceanKeywords", label: "Keywords", options: OCEAN_KEYWORDS_OPTIONS, placeholder: "Add keywords…" },
 ];
@@ -244,6 +246,7 @@ type LeadFormData = {
   lushaCompanyType: string[];
   oceanCompanyLookalikes: string[];
   oceanCompanySize: string[];
+  oceanOfficeLocation: string[];
   oceanHeadquarterLocation: string[];
   oceanKeywords: string[];
   leadCount: string;
@@ -265,6 +268,7 @@ const initialFormData: LeadFormData = {
   lushaCompanyType: [],
   oceanCompanyLookalikes: [],
   oceanCompanySize: [],
+  oceanOfficeLocation: ["Germany"],
   oceanHeadquarterLocation: ["Germany"],
   oceanKeywords: [],
   leadCount: "10",
