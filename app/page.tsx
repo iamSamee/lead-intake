@@ -213,6 +213,12 @@ const OCEAN_INDUSTRY_OPTIONS: Option[] = [
 
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
+const OCEAN_LEAD_COUNT_OPTIONS = ["5", "10", "25", "50", "100", "200", "500", "1000"];
+
+const LEAD_COUNT_OPTIONS_BY_SOURCE: Record<string, string[]> = {
+  "ocean-io": OCEAN_LEAD_COUNT_OPTIONS,
+};
+
 const DATA_SOURCE_OPTIONS: Option[] = [
   { value: "apollo", label: "Apollo" },
   { value: "lusha", label: "Lusha" },
@@ -458,7 +464,17 @@ export default function Home() {
     setFormData((prev) => ({ ...prev, [key]: values }));
   }
 
+  function handleDataSourceChange(newSource: string) {
+    const leadCountOptions = LEAD_COUNT_OPTIONS_BY_SOURCE[newSource] ?? LEAD_COUNT_OPTIONS;
+    setFormData((prev) => ({
+      ...prev,
+      dataSource: newSource,
+      leadCount: leadCountOptions.includes(prev.leadCount) ? prev.leadCount : leadCountOptions[0],
+    }));
+  }
+
   const activeFields = DATA_SOURCE_FIELDS[formData.dataSource] ?? [];
+  const activeLeadCountOptions = LEAD_COUNT_OPTIONS_BY_SOURCE[formData.dataSource] ?? LEAD_COUNT_OPTIONS;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -536,7 +552,7 @@ export default function Home() {
             id="dataSource"
             name="dataSource"
             value={formData.dataSource}
-            onChange={(e) => updateField("dataSource", e.target.value)}
+            onChange={(e) => handleDataSourceChange(e.target.value)}
           >
             {DATA_SOURCE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -567,7 +583,7 @@ export default function Home() {
             value={formData.leadCount}
             onChange={(e) => updateField("leadCount", e.target.value)}
           >
-            {LEAD_COUNT_OPTIONS.map((count) => (
+            {activeLeadCountOptions.map((count) => (
               <option key={count} value={count}>
                 {count}
               </option>
