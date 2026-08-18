@@ -556,7 +556,7 @@ export default function Home() {
                 onChange={(e) => updateField("oceanNeedsEmail", e.target.checked)}
               />
               <label htmlFor="oceanNeedsEmail" className="checkbox-label">
-                Needs email
+                Email
               </label>
             </div>
 
@@ -569,7 +569,7 @@ export default function Home() {
                 onChange={(e) => updateField("oceanNeedsPhone", e.target.checked)}
               />
               <label htmlFor="oceanNeedsPhone" className="checkbox-label">
-                Needs phone number
+                Phone number
               </label>
             </div>
           </>
