@@ -142,6 +142,25 @@ const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
   { value: "5001-10000", label: "5,001-10,000" }
 ];
 
+const OCEAN_COUNTRY_OPTIONS: Option[] = [
+  { value: "Germany", label: "Germany" },
+  { value: "France", label: "France" },
+  { value: "Italy", label: "Italy" },
+  { value: "Poland", label: "Poland" },
+  { value: "Spain", label: "Spain" },
+  { value: "United Kingdom", label: "United Kingdom" },
+  { value: "Netherlands", label: "Netherlands" },
+  { value: "Belgium", label: "Belgium" },
+  { value: "Switzerland", label: "Switzerland" },
+  { value: "Austria", label: "Austria" },
+  { value: "Sweden", label: "Sweden" },
+  { value: "Portugal", label: "Portugal" },
+  { value: "Ireland", label: "Ireland" },
+  { value: "Denmark", label: "Denmark" },
+  { value: "Norway", label: "Norway" },
+  { value: "Finland", label: "Finland" },
+];
+
 const OCEAN_KEYWORDS_OPTIONS: Option[] = [
   { value: "construction", label: "Construction" },
   { value: "structural", label: "Structural" },
@@ -214,8 +233,8 @@ const LUSHA_FIELDS: FieldConfig[] = [
 const OCEAN_FIELDS: FieldConfig[] = [
   { key: "oceanCompanyLookalikes", label: "Company lookalikes", placeholder: "Add company names…" },
   { key: "oceanCompanySize", label: "Size (employees)", options: OCEAN_COMPANY_SIZE_OPTIONS, placeholder: "Add company size ranges…" },
-  { key: "oceanOfficeLocation", label: "Office location", placeholder: "e.g. Germany" },
-  { key: "oceanHeadquarterLocation", label: "Headquarter location", placeholder: "e.g. Germany" },
+  { key: "oceanOfficeLocation", label: "Office location", options: OCEAN_COUNTRY_OPTIONS, placeholder: "Add countries…" },
+  { key: "oceanHeadquarterLocation", label: "Headquarter location", options: OCEAN_COUNTRY_OPTIONS, placeholder: "Add countries…" },
   { key: "oceanKeywords", label: "Keywords", options: OCEAN_KEYWORDS_OPTIONS, placeholder: "Add keywords…" },
 ];
 
