@@ -133,18 +133,13 @@ const LUSHA_COMPANY_LOCATION_OPTIONS: Option[] = [
 ];
 
 const OCEAN_COMPANY_SIZE_OPTIONS: Option[] = [
-  { value: "0-1", label: "0-1" },
   { value: "2-10", label: "2-10" },
   { value: "11-50", label: "11-50" },
   { value: "51-200", label: "51-200" },
   { value: "201-500", label: "201-500" },
   { value: "501-1000", label: "501-1,000" },
   { value: "1001-5000", label: "1,001-5,000" },
-  { value: "5001-10000", label: "5,001-10,000" },
-  { value: "10001-50000", label: "10,001-50,000" },
-  { value: "50001-100000", label: "50,001-100,000" },
-  { value: "100001-500000", label: "100,001-500,000" },
-  { value: "500000+", label: "500,000+" },
+  { value: "5001-10000", label: "5,001-10,000" }
 ];
 
 const OCEAN_KEYWORDS_OPTIONS: Option[] = [
@@ -164,7 +159,7 @@ const OCEAN_KEYWORDS_OPTIONS: Option[] = [
 
 const LEAD_COUNT_OPTIONS = ["5", "10", "20", "25"];
 
-const OCEAN_LEAD_COUNT_OPTIONS = ["5", "10", "25", "50", "100", "200", "500", "1000"];
+const OCEAN_LEAD_COUNT_OPTIONS = ["5", "10", "25", "50", "100"];
 
 const LEAD_COUNT_OPTIONS_BY_SOURCE: Record<string, string[]> = {
   "ocean-io": OCEAN_LEAD_COUNT_OPTIONS,
@@ -251,6 +246,8 @@ type LeadFormData = {
   oceanKeywords: string[];
   leadCount: string;
   emailStatusVerified: boolean;
+  oceanNeedsEmail: boolean;
+  oceanNeedsPhone: boolean;
   pin: string;
 };
 
@@ -273,6 +270,8 @@ const initialFormData: LeadFormData = {
   oceanKeywords: [],
   leadCount: "10",
   emailStatusVerified: true,
+  oceanNeedsEmail: false,
+  oceanNeedsPhone: true,
   pin: "",
 };
 
@@ -436,11 +435,15 @@ export default function Home() {
       sourceData[field.key] = formData[field.key];
     });
 
+    const isOcean = formData.dataSource === "ocean-io";
+
     const data = {
       dataSource: formData.dataSource,
       ...sourceData,
       leadCount: Number(formData.leadCount),
-      emailStatus: formData.emailStatusVerified,
+      ...(isOcean
+        ? { needsEmail: formData.oceanNeedsEmail, needsPhone: formData.oceanNeedsPhone }
+        : { emailStatus: formData.emailStatusVerified }),
       pin: formData.pin.trim(),
     };
 
@@ -542,18 +545,48 @@ export default function Home() {
           </select>
         </div>
 
-        <div className="field checkbox-field">
-          <input
-            id="emailStatus"
-            name="emailStatus"
-            type="checkbox"
-            checked={formData.emailStatusVerified}
-            onChange={(e) => updateField("emailStatusVerified", e.target.checked)}
-          />
-          <label htmlFor="emailStatus" className="checkbox-label">
-            Verified emails only
-          </label>
-        </div>
+        {formData.dataSource === "ocean-io" ? (
+          <>
+            <div className="field checkbox-field">
+              <input
+                id="oceanNeedsEmail"
+                name="oceanNeedsEmail"
+                type="checkbox"
+                checked={formData.oceanNeedsEmail}
+                onChange={(e) => updateField("oceanNeedsEmail", e.target.checked)}
+              />
+              <label htmlFor="oceanNeedsEmail" className="checkbox-label">
+                Needs email
+              </label>
+            </div>
+
+            <div className="field checkbox-field">
+              <input
+                id="oceanNeedsPhone"
+                name="oceanNeedsPhone"
+                type="checkbox"
+                checked={formData.oceanNeedsPhone}
+                onChange={(e) => updateField("oceanNeedsPhone", e.target.checked)}
+              />
+              <label htmlFor="oceanNeedsPhone" className="checkbox-label">
+                Needs phone number
+              </label>
+            </div>
+          </>
+        ) : (
+          <div className="field checkbox-field">
+            <input
+              id="emailStatus"
+              name="emailStatus"
+              type="checkbox"
+              checked={formData.emailStatusVerified}
+              onChange={(e) => updateField("emailStatusVerified", e.target.checked)}
+            />
+            <label htmlFor="emailStatus" className="checkbox-label">
+              Verified emails only
+            </label>
+          </div>
+        )}
 
         <div className="pin-block">
           <label htmlFor="pin">
