@@ -458,6 +458,9 @@ export default function Home() {
 
     const data = {
       dataSource: formData.dataSource,
+      apollo: formData.dataSource === "apollo",
+      lusha: formData.dataSource === "lusha",
+      oceanIo: isOcean,
       ...sourceData,
       leadCount: Number(formData.leadCount),
       ...(isOcean
