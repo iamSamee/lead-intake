@@ -359,6 +359,7 @@ function MultiSelectField({
     } else if (e.key === "Backspace" && !query && values.length) {
       removeValue(values[values.length - 1]);
     } else if (e.key === "Escape") {
+      setQuery("");
       setOpen(false);
     }
   }
@@ -394,6 +395,13 @@ function MultiSelectField({
             setOpen(true);
           }}
           onKeyDown={handleKeyDown}
+          onBlur={() => {
+            if (trimmedQuery) {
+              addValue(trimmedQuery);
+            } else {
+              setOpen(false);
+            }
+          }}
         />
       </div>
       {dropdownVisible && (
@@ -402,13 +410,20 @@ function MultiSelectField({
             <button
               type="button"
               className="multiselect-option multiselect-option-custom"
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => addValue(trimmedQuery)}
             >
               Add “{trimmedQuery}”
             </button>
           )}
           {filteredOptions.map((opt) => (
-            <button type="button" key={opt.value} className="multiselect-option" onClick={() => addValue(opt.value)}>
+            <button
+              type="button"
+              key={opt.value}
+              className="multiselect-option"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => addValue(opt.value)}
+            >
               {opt.label}
             </button>
           ))}
